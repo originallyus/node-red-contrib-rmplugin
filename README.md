@@ -1,4 +1,4 @@
-# node-red-contrib-athom-homey
+# node-red-contrib-rmplugin
 
 This is a collection of NodeRed nodes for adding [RMPlugin](https://play.google.com/store/apps/details?id=us.originally.tasker&hl=en) capability to your NodeRED flow.
 
