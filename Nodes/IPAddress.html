@@ -14,10 +14,17 @@
 
 <script type="text/x-red" data-template-name="rm-plugin-config">
     <div class="form-tips">
-        You'll first need to enable HTTP Bridge in your RMPlugin app.
-        <br/>
+        <p>
+        RMPlugin Nodes works with RMPlugin Android app via HTTP Bridge interfaces.
+        </p>
+        <p>
+        You'll first need to enable HTTP Bridge in your RMPlugin Android app.
+        </p>
+        <p>
         Then enter the IP Address of your Android device here. It is recommended to have a Static IP or DHCP Reservation for your Android device. In case your Android device changed its IP address, you'll need to manually update this value again.
+        </p>
     </div>
+    <p></p>
     <div class="form-row">
         <label for="node-config-input-ipaddress"><i class="icon-tag"></i> IP Address</label>
         <input type="text" id="node-config-input-ipaddress" placeholder="192.168.1.x">
