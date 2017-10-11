@@ -22,7 +22,7 @@ module.exports = function(RED) {
             node.send(this.server.port);
 
              this.on('input', function(msg) {
-               node.send("cinfug: " + config.macroid);
+               node.send("cinfug222: " + config.macroid);
                 node.send( msg);
               if("codeID" in msg || "deviceMAC" in msg){
                 codeID = msg.codeID;
@@ -49,7 +49,15 @@ module.exports = function(RED) {
               resp.on('end', () => {
                 console.log(JSON.parse(rawData).explanation);
                 node.send("Final: "+JSON.parse(rawData));
-                msg.payload = JSON.parse(rawData);
+                msg.rawResponse = JSON.parse(rawData);
+                if(msg.rawResponse.status === "ok"){
+                  msg.payload = "success";
+                }
+                if(msg.rawResponse.status !== "ok"){
+                  msg.payload = "failed";
+                }
+                
+              
                 node.send(msg);
                 node.status({fill:"green",shape:"dot",text:"completed"});
               });

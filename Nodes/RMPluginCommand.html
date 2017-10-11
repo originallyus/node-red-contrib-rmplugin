@@ -119,7 +119,7 @@
 </script>
  
 <script type="text/x-red" data-help-name="Command">
-<p>Use this node to execute a specific Device and Code command from RM Plugin</p>
+<p>Use this node to execute a specific Device and Code command from RM Plugin.</p>
 
  <h3>Inputs</h3>
      <ol class="node-ports">
@@ -132,11 +132,11 @@
          <li>Alternative input
              <dl class="message-properties">
                  <dt>msg.codeID <span class="property-type">string</span></dt>
-                 <dd>specific ID of a code to execute</dd>
+                 <dd>specific ID of a code to execute.</dd>
              </dl>
               <dl class="message-properties">
                  <dt>msg.deviceMAC <span class="property-type">string</span></dt>
-                 <dd>specific ID of a device to execute</dd>
+                 <dd>specific ID of a device to execute.</dd>
              </dl>
          </li>
      </ol>
@@ -145,6 +145,10 @@
         
              <dl class="message-properties">
                  <dt>msg.payload <span class="property-type">string</span></dt>
+                 <dd>indicate the task is <code>success</code> or <code>failed</code>.</dd>
+             </dl>
+              <dl class="message-properties">
+                 <dt>msg.rawResponse <span class="property-type">object</span></dt>
                  <dd>raw response data return from RM PLugin.</dd>
              </dl>
            
@@ -152,7 +156,7 @@
 
 
 <h3>Details</h3>
-    <p><code>msg.payload</code> is a raw json response from RM Plugin with <code>status</code>, <code>msg</code>,<code>uri</code>,<code>macroId</code>,<code>timestamp</code> attributes. </p>
+    <p><code>msg.rawResponse</code> is a raw json response from RM Plugin with <code>status</code>, <code>msg</code>,<code>uri</code>,<code>macroId</code>,<code>timestamp</code> attributes. </p>
     <p> <b>Note: </b> if <code>msg.deviceMAC</code> and <code>msg.codeID</code> exist from input, we will override the selected device and code in dropdown menu from node's settings to execute the command with <code>msg.deviceMAC</code> and <code>msg.codeID</code>.If <b> <i>one of those two </i> </b>field  are missing from input, we will execute the command selected from dropdown menu instead. </p>
 
 </script>

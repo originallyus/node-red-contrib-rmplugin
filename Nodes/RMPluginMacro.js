@@ -45,7 +45,14 @@ module.exports = function(RED) {
               resp.on('end', () => {
                 console.log(JSON.parse(rawData).explanation);
                 node.send("Final: "+JSON.parse(rawData));
-                msg.payload = JSON.parse(rawData);
+               msg.rawResponse = JSON.parse(rawData);
+                if(msg.rawResponse.status === "ok"){
+                  msg.payload = "success";
+                }
+                if(msg.rawResponse.status !== "ok"){
+                  msg.payload = "failed";
+                }
+                
                 node.send(msg);
                 node.status({fill:"green",shape:"dot",text:"completed"});
               });

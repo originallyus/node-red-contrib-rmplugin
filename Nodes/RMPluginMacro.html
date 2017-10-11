@@ -86,7 +86,7 @@
 </script>
  
 <script type="text/x-red" data-help-name="Macro">
-<p>Use this node to execute a specific macro from RM Plugin</p>
+<p>Use this node to execute a specific macro from RM Plugin.</p>
 
  <h3>Inputs</h3>
      <ol class="node-ports">
@@ -99,15 +99,19 @@
          <li>Alternative input
              <dl class="message-properties">
                  <dt>msg.macroID <span class="property-type">string</span></dt>
-                 <dd>specific ID of a macro to execute</dd>
+                 <dd>specific ID of a macro to execute.</dd>
              </dl>
          </li>
      </ol>
       <h3>Output</h3>
      <ol class="node-ports">
         
-             <dl class="message-properties">
+              <dl class="message-properties">
                  <dt>msg.payload <span class="property-type">string</span></dt>
+                 <dd>indicate the task is <code>success</code> or <code>failed</code>.</dd>
+             </dl>
+              <dl class="message-properties">
+                 <dt>msg.rawResponse <span class="property-type">object</span></dt>
                  <dd>raw response data return from RM PLugin.</dd>
              </dl>
            
@@ -115,7 +119,7 @@
 
 
 <h3>Details</h3>
-    <p><code>msg.payload</code> is a raw json response from RM Plugin with <code>status</code>, <code>msg</code>,<code>uri</code>,<code>macroId</code>,<code>timestamp</code> attributes. </p>
+    <p><code>msg.rawResponse</code> is a raw json response from RM Plugin with <code>status</code>, <code>msg</code>,<code>uri</code>,<code>macroId</code>,<code>timestamp</code> attributes. </p>
     <p> <b>Note: </b> if <code>msg.macroID</code> exist from input, we will override the selected macro in dropdown menu from node's settings to execute the macro according to  <code>msg.macroID</code>. </p>
 
 </script>

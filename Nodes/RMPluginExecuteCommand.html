@@ -45,15 +45,19 @@
      <h3>Output</h3>
      <ol class="node-ports">
         
-             <dl class="message-properties">
+               <dl class="message-properties">
                  <dt>msg.payload <span class="property-type">string</span></dt>
+                 <dd>indicate the task is <code>success</code> or <code>failed</code>.</dd>
+             </dl>
+              <dl class="message-properties">
+                 <dt>msg.rawResponse <span class="property-type">object</span></dt>
                  <dd>raw response data return from RM PLugin.</dd>
              </dl>
            
      </ol>
 
 <h3>Details</h3>
-    <p><code>msg.payload</code> is a raw json response from RM Plugin with <code>status</code>, <code>msg</code>,<code>uri</code>,<code>macroId</code>,<code>timestamp</code> attributes. </p>
+    <p><code>msg.rawResponse</code> is a raw json response from RM Plugin with <code>status</code>, <code>msg</code>,<code>uri</code>,<code>macroId</code>,<code>timestamp</code> attributes. </p>
     
    
 </script>
