@@ -1,0 +1,23 @@
+{
+    "name": "node-red-contrib-rmplugin",
+    "version": "0.0.1",
+    "description": "IP input node for RM Plugin",
+    "dependencies": {},
+    "keywords": [
+        "rmplugin",
+        "RM Plugin"
+    ],
+    "node-red": {
+        "nodes": {
+            "IPAddress": "Nodes/IPAddress.js",
+            "RMPluginGetCodes": "Nodes/RMPluginGetCodes.js",
+            "RMPluginGetDevices": "Nodes/RMPluginGetDevices.js",
+            "RMPluginGetMacros": "Nodes/RMPluginGetMacros.js",
+            "RMPluginExecuteMacro": "Nodes/RMPluginExecuteMacro.js",
+             "RMPluginExecuteCommand": "Nodes/RMPluginExecuteCommand.js",
+            "RMPluginMacro": "Nodes/RMPluginMacro.js",
+            "RMPluginCommand": "Nodes/RMPluginCommand.js"
+
+        }
+    }
+}

@@ -1,0 +1,58 @@
+<script type="text/javascript">
+    RED.nodes.registerType('Get Code List',{
+        category: 'RM Plugin',
+        color: '#FADCA7',
+        defaults: {
+            name: {value:""},
+            server: {value:"", type:"rm-plugin-config"},
+        },
+        inputs:1,
+        outputs:1,
+        icon: "icon.png",
+        label: function() {
+            return this.name|| "Code List";
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="Get Code List">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-server"><i class="icon-tag"></i> Server</label>
+        <input type="text" id="node-input-server" placeholder="Server">
+    </div>
+</script>
+ 
+<script type="text/x-red" data-help-name="Get Code List">
+<p>Use this node to retreive list of Code from your RM Plugin.</p>
+
+ <h3>Outputs</h3>
+     <ol class="node-ports">
+        
+             <dl class="message-properties">
+                 <dt>msg.payload <span class="property-type">string</span></dt>
+                 <dd>raw data return from RM PLugin.</dd>
+             </dl>
+               <dl class="message-properties">
+                 <dt>msg.options <span class="property-type">array</span></dt>
+                 <dd>formatted data for node-red-dashboard Dropdown</dd>
+             </dl>
+        
+       <!--   <li>Standard error
+             <dl class="message-properties">
+                 <dt>payload <span class="property-type">string</span></dt>
+                 <dd>the standard error of the command.</dd>
+             </dl>
+         </li> -->
+     </ol>
+
+<h3>Details</h3>
+    <p><code>msg.payload</code> is a raw json response from RM Plugin HTTP Bridge just like when you make a GET/POST request from browser.</p>
+    <p><code>msg.options</code> is formatted to work with node-red-dashboard Dropdown so it will work out of the box you just nees to connect dashboard node to this node and that is. Value of options will be the code id</p>
+   
+
+</script>
+

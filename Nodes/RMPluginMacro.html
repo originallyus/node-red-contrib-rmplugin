@@ -1,0 +1,122 @@
+<script type="text/javascript">
+    RED.nodes.registerType('Macro',{
+        category: 'RM Plugin',
+        color: '#FADCA7',
+        defaults: {
+            name: {value:""},
+            server: {value:"", type:"rm-plugin-config"},
+            macroid: {value:""}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "icon.png",
+        label: function() {
+            return this.name|| "Macro";
+        },
+        oneditprepare: function(){
+            var selectedMacro = this.macroid;
+              console.log("macroID: " + this.macroid);
+
+           $("#node-input-server").change(function(){
+            //emty select's options first
+            $("#node-input-macroid").empty();
+
+            //get config node
+             var configNodeID = $('#node-input-server').val();
+            
+             var configNode = RED.nodes.node(configNodeID);
+             // console.log(configNode);
+            if(configNode !== null){
+            var ipaddress = configNode.ipaddress;
+            var port = configNode.port;
+            var url = "http://" + ipaddress + ":" + port+"/macros";
+
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                   // Typical action to be performed when the document is ready:
+                   console.log("ok ok ok");
+                   console.log(JSON.parse(xhttp.responseText));
+                    var jsonResponse = JSON.parse(xhttp.responseText);
+                    var options ="";
+                    $("#node-input-macroid").empty();
+                    for (var i in jsonResponse){
+                    var displayName = jsonResponse[i].name;
+                    var value = jsonResponse[i].id;
+                    options += '<option value="' + value + '">' + displayName + '</option>';
+                   }
+                $("#node-input-macroid").append(options);
+                $("#node-input-macroid").val(selectedMacro);
+                
+                }
+            };
+            xhttp.open("GET", url, true);
+            xhttp.send();
+        }
+
+            if(configNode === null){
+                $("#macro_select").hide();
+            }
+            else{
+                 $("#macro_select").show();
+             }
+             });
+        }
+
+       
+    });
+
+
+</script>
+
+<script type="text/x-red" data-template-name="Macro" >
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row" >
+        <label for="node-input-server"><i class="icon-tag"></i> Server</label>
+        <input type="text" id="node-input-server" placeholder="Server">
+    </div>
+       <div class="form-row" id="macro_select">
+        <label id="a" for="node-input-macroid"><i class="icon-tag"></i> Macro</label>
+        <select type="text" id="node-input-macroid"  placeholder="Macro">
+        </select>
+        </div>
+</script>
+ 
+<script type="text/x-red" data-help-name="Macro">
+<p>Use this node to execute a specific macro from RM Plugin</p>
+
+ <h3>Inputs</h3>
+     <ol class="node-ports">
+         <li>Standard input
+             <dl class="message-properties">
+                 <dt>Intergrated </dt>
+                 <dd>Selected our intergrated Macros list from dropdown menu and use a trigger input node to execute that macro.</dd>
+             </dl>
+         </li>
+         <li>Alternative input
+             <dl class="message-properties">
+                 <dt>msg.macroID <span class="property-type">string</span></dt>
+                 <dd>specific ID of a macro to execute</dd>
+             </dl>
+         </li>
+     </ol>
+      <h3>Output</h3>
+     <ol class="node-ports">
+        
+             <dl class="message-properties">
+                 <dt>msg.payload <span class="property-type">string</span></dt>
+                 <dd>raw response data return from RM PLugin.</dd>
+             </dl>
+           
+     </ol>
+
+
+<h3>Details</h3>
+    <p><code>msg.payload</code> is a raw json response from RM Plugin with <code>status</code>, <code>msg</code>,<code>uri</code>,<code>macroId</code>,<code>timestamp</code> attributes. </p>
+    <p> <b>Note: </b> if <code>msg.macroID</code> exist from input, we will override the selected macro in dropdown menu from node's settings to execute the macro according to  <code>msg.macroID</code>. </p>
+
+</script>
+

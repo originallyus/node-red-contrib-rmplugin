@@ -1,0 +1,60 @@
+<script type="text/javascript">
+    RED.nodes.registerType('Execute Command',{
+        category: 'RM Plugin',
+        color: '#FADCA7',
+        defaults: {
+            name: {value:""},
+            server: {value:"", type:"rm-plugin-config"},
+        },
+        inputs:1,
+        outputs:1,
+        icon: "icon.png",
+        label: function() {
+            return this.name|| "Execute Command";
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="Execute Command">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-server"><i class="icon-tag"></i> Server</label>
+        <input type="text" id="node-input-server" placeholder="Server">
+    </div>
+</script>
+ 
+<script type="text/x-red" data-help-name="Execute Command">
+<p>Use this node to execute a macro from RM Plugin.</p>
+
+ <h3>Input</h3>
+     <ol class="node-ports">
+         
+             <dl class="message-properties">
+                 <dt>msg.codeID <span class="property-type">string</span></dt>
+                 <dd>specific ID of a code to execute</dd>
+             </dl>
+              <dl class="message-properties">
+                 <dt>msg.deviceMAC <span class="property-type">string</span></dt>
+                 <dd>specific ID of a device to execute</dd>
+             </dl>
+     </ol>
+
+     <h3>Output</h3>
+     <ol class="node-ports">
+        
+             <dl class="message-properties">
+                 <dt>msg.payload <span class="property-type">string</span></dt>
+                 <dd>raw response data return from RM PLugin.</dd>
+             </dl>
+           
+     </ol>
+
+<h3>Details</h3>
+    <p><code>msg.payload</code> is a raw json response from RM Plugin with <code>status</code>, <code>msg</code>,<code>uri</code>,<code>macroId</code>,<code>timestamp</code> attributes. </p>
+    
+   
+</script>
+
