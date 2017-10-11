@@ -1,11 +1,10 @@
 module.exports = function(RED) {
     function rmpluginIPAddressConfig(config) {
-        RED.nodes.createNode(this,config);
+        RED.nodes.createNode(this, config);
         this.ipaddress = config.ipaddress;
         this.port = config.port
-
     }
-    RED.nodes.registerType("rm-plugin-config",rmpluginIPAddressConfig);
+    RED.nodes.registerType("rm-plugin-config", rmpluginIPAddressConfig);
 
 
 

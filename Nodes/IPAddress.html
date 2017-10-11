@@ -1,44 +1,9 @@
-<!-- <script type="text/javascript">
-    RED.nodes.registerType('RM Plugin IP Input',{
-        category: 'RM Plugin',
-        color: '#FADCA7',
-        defaults: {
-            name: {value:""},
-            // ipaddress: {value:"",required:true},
-            // port: {value:"",required:true,validate:RED.validators.number()},
-            server: {value:"", type:"rm-plugin-config"},
-        },
-        inputs:1,
-        outputs:1,
-        icon: "icon.png",
-        label: function() {
-            return this.name|| "RM PLugin IP Address";
-        }
-    });
-</script>
-
-<script type="text/x-red" data-template-name="RM Plugin IP Input">
-    <div class="form-row">
-        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
-        <input type="text" id="node-input-name" placeholder="Name">
-    </div>
-    <div class="form-row">
-        <label for="node-input-server"><i class="icon-tag"></i> Server</label>
-        <input type="text" id="node-input-server" placeholder="Server">
-    </div>
-</script>
- 
-<script type="text/x-red" data-help-name="RM Plugin IP Input">
-    <p>Use this node to enter your RM Plugin HTTP Bridge's IP Address and Port Number.<br/>
-    </p>
-</script>
- -->
 <script type="text/javascript">
     RED.nodes.registerType('rm-plugin-config',{
         category: 'config',
         defaults: {
-            ipaddress: {value:"",required:true},
-            port: {value:"",required:true,validate:RED.validators.number()},
+            ipaddress: {value:"", required:true},
+            port: {value:"9876", required:true, validate:RED.validators.number()},
             
         },
         label: function() {
@@ -48,13 +13,18 @@
 </script>
 
 <script type="text/x-red" data-template-name="rm-plugin-config">
+    <div class="form-tips">
+        You'll first need to enable HTTP Bridge in your RMPlugin app.
+        <br/>
+        Then enter the IP Address of your Android device here. It is recommended to have a Static IP or DHCP Reservation for your Android device. In case your Android device changed its IP address, you'll need to manually update this value again.
+    </div>
     <div class="form-row">
         <label for="node-config-input-ipaddress"><i class="icon-tag"></i> IP Address</label>
-        <input type="text" id="node-config-input-ipaddress" placeholder="IP Address">
+        <input type="text" id="node-config-input-ipaddress" placeholder="192.168.1.x">
     </div>
     <div class="form-row">
         <label for="node-config-input-port"><i class="icon-tag"></i> Port</label>
-        <input type="text" id="node-config-input-port" placeholder="Port">
+        <input type="text" id="node-config-input-port" placeholder="9876">
     </div>
 </script>
  
