@@ -1,12 +1,24 @@
 {
     "name": "node-red-contrib-rmplugin",
     "version": "0.0.1",
-    "description": "IP input node for RM Plugin",
-    "dependencies": {},
+    "description": "A collection of nodes for RMPlugin app",
+    "homepage": "https://github.com/originallyus/node-red-contrib-rmplugin",
     "keywords": [
+        "node-red",
         "rmplugin",
-        "RM Plugin"
+        "RM Plugin",
+        "broadlink"
     ],
+    "bugs": {
+        "url": "https://github.com/originallyus/node-red-contrib-rmplugin/issues",
+        "email": "hello@originally.us"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/originallyus/node-red-contrib-rmplugin.git"
+    },
+    "author": "Originally US <hello@originally.us>",
+    "license": "ISC",
     "node-red": {
         "nodes": {
             "IPAddress": "Nodes/IPAddress.js",
@@ -14,10 +26,10 @@
             "RMPluginGetDevices": "Nodes/RMPluginGetDevices.js",
             "RMPluginGetMacros": "Nodes/RMPluginGetMacros.js",
             "RMPluginExecuteMacro": "Nodes/RMPluginExecuteMacro.js",
-             "RMPluginExecuteCommand": "Nodes/RMPluginExecuteCommand.js",
+            "RMPluginExecuteCommand": "Nodes/RMPluginExecuteCommand.js",
             "RMPluginMacro": "Nodes/RMPluginMacro.js",
             "RMPluginCommand": "Nodes/RMPluginCommand.js"
-
         }
-    }
+    },
+    "dependencies": {}
 }
