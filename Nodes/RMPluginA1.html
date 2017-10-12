@@ -1,0 +1,115 @@
+
+<script type="text/javascript">
+    RED.nodes.registerType('A1 Devices',{
+        category: 'RM Plugin',
+        color: '#FADCA7',
+        defaults: {
+            name: {value:""},
+            server: {value:"", type:"rm-plugin-config"},
+            devicemac: {value:""}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "icon.png",
+        label: function() {
+            return this.name|| "A1 Devices";
+        },
+        oneditprepare: function(){
+            var selectedDevice = this.devicemac;
+
+           $("#node-input-server").change(function(){
+            //emty select's options first
+            $("#node-input-devicemac").empty();
+            //get config node
+             var configNodeID = $('#node-input-server').val();
+            
+             var configNode = RED.nodes.node(configNodeID);
+             // console.log(configNode);
+            if(configNode !== null){
+            var ipaddress = configNode.ipaddress;
+            var port = configNode.port;
+            var urlDevice = "http://" + ipaddress + ":" + port+"/devices";
+            var xhttpDevice = new XMLHttpRequest();
+            xhttpDevice.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                   // Typical action to be performed when the document is ready:
+                   console.log(JSON.parse(xhttpDevice.responseText));
+                    var jsonResponse = JSON.parse(xhttpDevice.responseText);
+                    var options ="";
+                     $("#node-input-devicemac").empty();
+                  
+                    for (var i in jsonResponse){
+                        if(jsonResponse[i].type.toLowerCase().indexOf("a1") !== -1){
+                    var displayName = jsonResponse[i].name;
+                    var value = jsonResponse[i].mac;
+                    options += '<option value="' + value + '">' + displayName + '</option>';
+                        }
+                   }
+                $("#node-input-devicemac").append(options);
+                 // $("#node-input-devicemac").val(selectedDevice);
+                
+                }
+            };
+            xhttpDevice.open("GET", urlDevice, true);
+            xhttpDevice.send();
+        }
+
+            if(configNode === null){
+                $("#device_select").hide();
+               
+            }
+            else{
+                 $("#device_select").show();
+          
+             }
+             });
+        }
+
+    });
+</script>
+
+<script type="text/x-red" data-template-name="A1 Devices">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-server"><i class="icon-tag"></i> Server</label>
+        <input type="text" id="node-input-server" placeholder="Server">
+    </div>
+    <div class="form-row" id="device_select">
+        <label id="a" for="node-input-devicemac"><i class="icon-tag"></i> Devices</label>
+        <select type="text" id="node-input-devicemac"  placeholder="Devices">
+        </select>
+    </div>
+</script>
+ 
+<script type="text/x-red" data-help-name="A1 Devices">
+<p>Use this node to retrieve current reading on a A1 device. </p>
+
+     <h3>Output</h3>
+     <ol class="node-ports">
+        
+              <dl class="message-properties">
+                 <dt>msg.payload <span class="property-type">object</span></dt>
+                 <dd>current reading from the selected A1 device.</dd>
+             </dl>
+
+               <dl class="message-properties">
+                 <dt>msg.status <span class="property-type">string</span></dt>
+                 <dd>indicate the task is <code>success</code> or <code>failed</code>.</dd>
+             </dl>
+
+              <dl class="message-properties">
+                 <dt>msg.rawResponse <span class="property-type">object</span></dt>
+                 <dd>raw response data return from RM PLugin.</dd>
+             </dl>
+           
+     </ol>
+
+<h3>Details</h3>
+    <p><code>msg.payload</code> is the return current reading from selected A1 device with <code>temperature</code>, <code>humidity</code>,<code>air</code>,<code>light</code>,<code>noisy</code> attributes. </p>
+    
+   
+</script>
+
