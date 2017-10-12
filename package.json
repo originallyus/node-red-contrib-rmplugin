@@ -28,7 +28,11 @@
             "RMPluginExecuteMacro": "Nodes/RMPluginExecuteMacro.js",
             "RMPluginExecuteCommand": "Nodes/RMPluginExecuteCommand.js",
             "RMPluginMacro": "Nodes/RMPluginMacro.js",
-            "RMPluginCommand": "Nodes/RMPluginCommand.js"
+            "RMPluginCommand": "Nodes/RMPluginCommand.js",
+            "RMPluginSP": "Nodes/RMPluginSP.js",
+            "RMPluginA1": "Nodes/RMPluginA1.js",
+            "RMPluginRMTemperature": "Nodes/RMPluginRMTemperature.js"
+
         }
     },
     "dependencies": {}
