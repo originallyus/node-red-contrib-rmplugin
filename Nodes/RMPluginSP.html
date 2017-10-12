@@ -1,21 +1,135 @@
+<style>
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px !important;
+  height: 34px;
+  margin-bottom: 0px !important;
+}
+
+.switch #node-input-codeid {display:none;}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+#node-input-codeid:checked + .slider {
+  background-color: #2196F3;
+}
+
+#node-input-codeid:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+#node-input-codeid:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+</style>
+
 <script type="text/javascript">
-    RED.nodes.registerType('Execute Macro',{
+    RED.nodes.registerType('SP Devices',{
         category: 'RM Plugin',
         color: '#FADCA7',
         defaults: {
             name: {value:""},
             server: {value:"", type:"rm-plugin-config"},
+            codeid: {value:""},
+            devicemac: {value:""}
         },
         inputs:1,
         outputs:1,
         icon: "icon.png",
         label: function() {
-            return this.name|| "Execute Macro";
+            return this.name|| "SP Devices";
+        },
+        oneditprepare: function(){
+            var selectedCode = this.codeid;
+            var selectedDevice = this.devicemac;
+
+           $("#node-input-server").change(function(){
+            //emty select's options first
+               $("#node-input-devicemac").empty();
+                    $("#node-input-codeid").empty();
+            //get config node
+             var configNodeID = $('#node-input-server').val();
+            
+             var configNode = RED.nodes.node(configNodeID);
+             // console.log(configNode);
+            if(configNode !== null){
+            var ipaddress = configNode.ipaddress;
+            var port = configNode.port;
+            var urlDevice = "http://" + ipaddress + ":" + port+"/devices";
+            var xhttpDevice = new XMLHttpRequest();
+            xhttpDevice.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                   // Typical action to be performed when the document is ready:
+                   console.log("ok ok ok");
+                   console.log(JSON.parse(xhttpDevice.responseText));
+                    var jsonResponse = JSON.parse(xhttpDevice.responseText);
+                    var options ="";
+                  
+                    for (var i in jsonResponse){
+                        if(jsonResponse[i].type.toLowerCase().indexOf("rm2") !== -1){
+                    var displayName = jsonResponse[i].name;
+                    var value = jsonResponse[i].mac;
+                    options += '<option value="' + value + '">' + displayName + '</option>';
+                        }
+                   }
+                $("#node-input-devicemac").append(options);
+                 $("#node-input-devicemac").val(selectedDevice);
+                
+                }
+            };
+            xhttpDevice.open("GET", urlDevice, true);
+            xhttpDevice.send();
         }
+
+            if(configNode === null){
+                $("#device_select").hide();
+                $("#code_select").hide();
+            }
+            else{
+                 $("#device_select").show();
+                 $("#code_select").show();
+             }
+             });
+        }
+
     });
 </script>
 
-<script type="text/x-red" data-template-name="Execute Macro">
+<script type="text/x-red" data-template-name="SP Devices">
     <div class="form-row">
         <label for="node-input-name"><i class="icon-tag"></i> Name</label>
         <input type="text" id="node-input-name" placeholder="Name">
@@ -24,9 +138,26 @@
         <label for="node-input-server"><i class="icon-tag"></i> Server</label>
         <input type="text" id="node-input-server" placeholder="Server">
     </div>
+    <div class="form-row" id="device_select">
+        <label id="a" for="node-input-devicemac"><i class="icon-tag"></i> Devices</label>
+        <select type="text" id="node-input-devicemac"  placeholder="Devices">
+        </select>
+    </div>
+<div class="form-row" id="code_select" >
+        <label id="a" for="node-input-codeid"><i class="icon-tag"></i> Status</label>   
+        <p  id="node-input-codeid"  placeholder="Codes">abc </p>    
+    </div>
+
+    <div class="form-row" id="code_select" >
+        <label id="a" for="node-input-codeid"><i class="icon-tag"></i> Codes</label>
+        <label class="switch">
+        <input type="checkbox" id="node-input-codeid"  placeholder="Codes">
+        <span class="slider round"></span>
+        </label>
+    </div>
 </script>
  
-<script type="text/x-red" data-help-name="Execute Macro">
+<script type="text/x-red" data-help-name="SP Devices">
 <p>Use this node to execute a macro from RM Plugin.</p>
 
  <h3>Input</h3>

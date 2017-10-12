@@ -1,5 +1,5 @@
 module.exports = function(RED) {
-    function rmpluginExecuteMacro(config) {
+    function rmpluginSP(config) {
         RED.nodes.createNode(this,config);
         var context = this.context();
         // this.ipaddress = config.ipaddress;
@@ -18,7 +18,7 @@ module.exports = function(RED) {
             node.send(this.server.port);
              this.on('input', function(msg) {
                 node.status({fill:"blue",shape:"ring",text:"requesting"});
-
+              node.send("SP code: "+config.codeid);
             const http = require("http");
                var url = "http://" + this.server.ipaddress + ":" + this.server.port+"/execute?macroId="+msg.macroID;
 
@@ -56,6 +56,6 @@ module.exports = function(RED) {
             // No config node configured
         }
     }
-    RED.nodes.registerType("Execute Macro",rmpluginExecuteMacro);
+    RED.nodes.registerType("SP Devices",rmpluginSP);
 
 };
