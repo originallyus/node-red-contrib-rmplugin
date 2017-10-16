@@ -31,7 +31,8 @@
             "RMPluginCommand": "Nodes/RMPluginCommand.js",
             "RMPluginSP": "Nodes/RMPluginSP.js",
             "RMPluginA1": "Nodes/RMPluginA1.js",
-            "RMPluginRMTemperature": "Nodes/RMPluginRMTemperature.js"
+            "RMPluginRMTemperature": "Nodes/RMPluginRMTemperature.js",
+            "RMPluginIFLearning": "Nodes/RMPluginIFLearning.js"
 
         }
     },
