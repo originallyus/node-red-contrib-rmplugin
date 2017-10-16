@@ -17,7 +17,9 @@
         oneditprepare: function(){
             var selectedDevice = this.devicemac;
             var selectedCode = this.codeid;
-
+              $("#node-input-devicemac").empty();
+             $("#node-input-codeid").empty();
+             
            $("#node-input-server").change(function(){
             //emty select's options first
             $("#node-input-devicemac").empty();
@@ -42,8 +44,8 @@
                    console.log(JSON.parse(xhttpDevice.responseText));
                     var jsonResponse = JSON.parse(xhttpDevice.responseText);
                     var options ="";
-                     $("#node-input-devicemac").empty();
-                    $("#node-input-codeid").empty();
+                    //  $("#node-input-devicemac").empty();
+                    // $("#node-input-codeid").empty();
                     for (var i in jsonResponse){
                     var displayName = jsonResponse[i].name;
                     var value = jsonResponse[i].mac;
