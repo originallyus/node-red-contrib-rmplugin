@@ -1,211 +1,214 @@
 <style>
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 60px !important;
-  height: 34px;
-  margin-bottom: 0px !important;
-}
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 60px !important;
+    height: 34px;
+    margin-bottom: 0px !important;
+  }
 
-.switch #node-input-codeid {display:none;}
+  .switch #node-input-codeid {display:none;}
 
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  -webkit-transition: .4s;
-  transition: .4s;
-}
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
 
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 26px;
-  width: 26px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
-}
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
 
-#node-input-codeid:checked + .slider {
-  background-color: #2196F3;
-}
+  #node-input-codeid:checked + .slider {
+    background-color: #2196F3;
+  }
 
-#node-input-codeid:focus + .slider {
-  box-shadow: 0 0 1px #2196F3;
-}
+  #node-input-codeid:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+  }
 
-#node-input-codeid:checked + .slider:before {
-  -webkit-transform: translateX(26px);
-  -ms-transform: translateX(26px);
-  transform: translateX(26px);
-}
+  #node-input-codeid:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+  }
 
-/* Rounded sliders */
-.slider.round {
-  border-radius: 34px;
-}
+  /* Rounded sliders */
+  .slider.round {
+    border-radius: 34px;
+  }
 
-.slider.round:before {
-  border-radius: 50%;
-}
+  .slider.round:before {
+    border-radius: 50%;
+  }
 </style>
 
 <script type="text/javascript">
-    RED.nodes.registerType('Learn New Code',{
-        category: 'RM Plugin',
-        color: '#FADCA7',
-        defaults: {
-            name: {value:""},
-            server: {value:"", type:"rm-plugin-config"},
-            devicemac: {value:""}
-        },
-        inputs:1,
-        outputs:1,
-        icon: "icon.png",
-        label: function() {
-            return this.name|| "Learn New Code";
-        },
-        oneditprepare: function(){
-            var selectedCode = this.codeid;
-            var selectedDevice = this.devicemac;
+  RED.nodes.registerType('Learn New Code',{
+    category: 'RM Plugin',
+    color: '#FADCA7',
+    defaults: {
+      name: {value:""},
+      server: {value:"", type:"rm-plugin-config"},
+      devicemac: {value:""}
+    },
+    inputs:1,
+    outputs:1,
+    icon: "icon.png",
+    label: function() {
+      return this.name|| "Learn New Code";
+    },
+    oneditprepare: function(){
+      var selectedCode = this.codeid;
+      var selectedDevice = this.devicemac;
 
-           $("#node-input-server").change(function(){
+      $("#node-input-server").change(function(){
             //emty select's options first
-               $("#node-input-devicemac").empty();
+             $("#node-input-devicemac").empty();
             //get config node
-             var configNodeID = $('#node-input-server').val();
+            var configNodeID = $('#node-input-server').val();
             
-             var configNode = RED.nodes.node(configNodeID);
+            var configNode = RED.nodes.node(configNodeID);
              // console.log(configNode);
-            if(configNode !== null){
-            var ipaddress = configNode.ipaddress;
-            var port = configNode.port;
-            var urlDevice = "http://" + ipaddress + ":" + port+"/devices";
-            var xhttpDevice = new XMLHttpRequest();
-            xhttpDevice.onreadystatechange = function() {
+             if(configNode !== null){
+              var ipaddress = configNode.ipaddress;
+              var port = configNode.port;
+              var urlDevice = "http://" + ipaddress + ":" + port+"/devices";
+              var xhttpDevice = new XMLHttpRequest();
+              xhttpDevice.onreadystatechange = function() {
                 if (this.readyState == 4 && this.status == 200) {
                    // Typical action to be performed when the document is ready:
                    console.log("ok ok ok");
                    console.log(JSON.parse(xhttpDevice.responseText));
-                    var jsonResponse = JSON.parse(xhttpDevice.responseText);
-                    var options ="";
-                  
-                    for (var i in jsonResponse){
-                        if(jsonResponse[i].type.toLowerCase().indexOf("rm") !== -1){
-                    var displayName = jsonResponse[i].name;
-                    var value = jsonResponse[i].mac;
-                    options += '<option value="' + value + '">' + displayName + '</option>';
-                        }
-                   }
-                $("#node-input-devicemac").append(options);
-                 $("#node-input-devicemac").val(selectedDevice);
-                
+                   var jsonResponse = JSON.parse(xhttpDevice.responseText);
+                   var options ="";
+                   
+                   for (var i in jsonResponse){
+                    if(jsonResponse[i].type.toLowerCase().indexOf("rm") !== -1){
+                     if(jsonResponse[i].typeCode < 80000){
+                      var displayName = jsonResponse[i].name;
+                      var value = jsonResponse[i].mac;
+                      options += '<option value="' + value + '">' + displayName + '</option>';
+                    }
+                  }
                 }
+                  $("#node-input-devicemac").empty();
+                $("#node-input-devicemac").append(options);
+                $("#node-input-devicemac").val(selectedDevice);
+                
+              }
             };
             xhttpDevice.open("GET", urlDevice, true);
             xhttpDevice.send();
-        }
+          }
 
-            if(configNode === null){
-                $("#device_select").hide();
-                $("#code_select").hide();
-            }
-            else{
-                 $("#device_select").show();
-                 $("#code_select").show();
-             }
-             });
+          if(configNode === null){
+            $("#device_select").hide();
+            $("#code_select").hide();
+          }
+          else{
+           $("#device_select").show();
+           $("#code_select").show();
+         }
+       });
+    },
+    button: {
+      enabled: function() {
+        return !this.changed
+      },
+      onclick: function() {
+       if (this.changed) {
+        return RED.notify(RED._("notification.warning", {message:RED._("notification.warnings.undeployedChanges")}),"warning");
+      }
+      var label = (this.name||this.payload);
+      
+      var node = this;
+      $.ajax({
+        url: "inject/"+this.id,
+        type:"POST",
+        success: function(resp) {
+          RED.notify(node._("inject.success",{label:label}),"success");
         },
-         button: {
-            enabled: function() {
-                return !this.changed
-            },
-              onclick: function() {
-         if (this.changed) {
-                    return RED.notify(RED._("notification.warning", {message:RED._("notification.warnings.undeployedChanges")}),"warning");
-                }
-                var label = (this.name||this.payload);
-               
-                var node = this;
-                $.ajax({
-                    url: "inject/"+this.id,
-                    type:"POST",
-                    success: function(resp) {
-                        RED.notify(node._("inject.success",{label:label}),"success");
-                    },
-                    error: function(jqXHR,textStatus,errorThrown) {
-                        if (jqXHR.status == 404) {
-                            RED.notify(node._("common.notification.error",{message:node._("common.notification.errors.not-deployed")}),"error");
-                        } else if (jqXHR.status == 500) {
-                            RED.notify(node._("common.notification.error",{message:node._("inject.errors.failed")}),"error");
-                        } else if (jqXHR.status == 0) {
-                            RED.notify(node._("common.notification.error",{message:node._("common.notification.errors.no-response")}),"error");
-                        } else {
-                            RED.notify(node._("common.notification.error",{message:node._("common.notification.errors.unexpected",{status:jqXHR.status,message:textStatus})}),"error");
-                        }
-                    }
-                });
+        error: function(jqXHR,textStatus,errorThrown) {
+          if (jqXHR.status == 404) {
+            RED.notify(node._("common.notification.error",{message:node._("common.notification.errors.not-deployed")}),"error");
+          } else if (jqXHR.status == 500) {
+            RED.notify(node._("common.notification.error",{message:node._("inject.errors.failed")}),"error");
+          } else if (jqXHR.status == 0) {
+            RED.notify(node._("common.notification.error",{message:node._("common.notification.errors.no-response")}),"error");
+          } else {
+            RED.notify(node._("common.notification.error",{message:node._("common.notification.errors.unexpected",{status:jqXHR.status,message:textStatus})}),"error");
+          }
+        }
+      });
 
 
                   //end tag
-            }
-        }
+                }
+              }
 
-    });
-</script>
+            });
+          </script>
 
-<script type="text/x-red" data-template-name="Learn New Code">
-    <div class="form-row">
-        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
-        <input type="text" id="node-input-name" placeholder="Name">
-    </div>
-    <div class="form-row">
-        <label for="node-input-server"><i class="icon-tag"></i> Server</label>
-        <input type="text" id="node-input-server" placeholder="Server">
-    </div>
-    <div class="form-row" id="device_select">
-        <label id="a" for="node-input-devicemac"><i class="icon-tag"></i> Devices</label>
-        <select type="text" id="node-input-devicemac"  placeholder="Devices">
-        </select>
-    </div>
-</script>
- 
-<script type="text/x-red" data-help-name="Learn New Code">
-<p>Use this node to execute a macro from RM Plugin.</p>
+          <script type="text/x-red" data-template-name="Learn New Code">
+            <div class="form-row">
+              <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+              <input type="text" id="node-input-name" placeholder="Name">
+            </div>
+            <div class="form-row">
+              <label for="node-input-server"><i class="icon-tag"></i> Server</label>
+              <input type="text" id="node-input-server" placeholder="Server">
+            </div>
+            <div class="form-row" id="device_select">
+              <label id="a" for="node-input-devicemac"><i class="icon-tag"></i> Devices</label>
+              <select type="text" id="node-input-devicemac"  placeholder="Devices">
+              </select>
+            </div>
+          </script>
+           
+          <script type="text/x-red" data-help-name="Learn New Code">
+            <p>Use this node to execute a macro from RM Plugin.</p>
 
- <h3>Input</h3>
-     <ol class="node-ports">
-         
+            <h3>Input</h3>
+            <ol class="node-ports">
+             
              <dl class="message-properties">
-                 <dt>msg.macroID <span class="property-type">string</span></dt>
-                 <dd>specific ID of a macro to execute</dd>
+               <dt>msg.macroID <span class="property-type">string</span></dt>
+               <dd>specific ID of a macro to execute</dd>
              </dl>
-     </ol>
+           </ol>
 
-     <h3>Output</h3>
-     <ol class="node-ports">
-        
-              <dl class="message-properties">
-                 <dt>msg.payload <span class="property-type">string</span></dt>
-                 <dd>indicate the task is <code>success</code> or <code>failed</code>.</dd>
-             </dl>
-              <dl class="message-properties">
-                 <dt>msg.rawResponse <span class="property-type">object</span></dt>
-                 <dd>raw response data return from RM PLugin.</dd>
-             </dl>
+           <h3>Output</h3>
+           <ol class="node-ports">
+            
+            <dl class="message-properties">
+             <dt>msg.payload <span class="property-type">string</span></dt>
+             <dd>indicate the task is <code>success</code> or <code>failed</code>.</dd>
+           </dl>
+           <dl class="message-properties">
+             <dt>msg.rawResponse <span class="property-type">object</span></dt>
+             <dd>raw response data return from RM PLugin.</dd>
+           </dl>
            
-     </ol>
+         </ol>
 
-<h3>Details</h3>
-    <p><code>msg.rawResponse</code> is a raw json response from RM Plugin with <code>status</code>, <code>msg</code>,<code>uri</code>,<code>macroId</code>,<code>timestamp</code> attributes. </p>
-    
-   
-</script>
+         <h3>Details</h3>
+         <p><code>msg.rawResponse</code> is a raw json response from RM Plugin with <code>status</code>, <code>msg</code>,<code>uri</code>,<code>macroId</code>,<code>timestamp</code> attributes. </p>
+         
+         
+       </script>
 

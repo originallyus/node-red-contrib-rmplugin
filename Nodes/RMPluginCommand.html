@@ -17,86 +17,88 @@
         oneditprepare: function(){
             var selectedDevice = this.devicemac;
             var selectedCode = this.codeid;
-              $("#node-input-devicemac").empty();
-             $("#node-input-codeid").empty();
-             
-           $("#node-input-server").change(function(){
+    
+            $("#node-input-server").change(function(){
             //emty select's options first
             $("#node-input-devicemac").empty();
-             $("#node-input-codeid").empty();
+            $("#node-input-codeid").empty();
             
             //get config node
-             var configNodeID = $('#node-input-server').val();
+            var configNodeID = $('#node-input-server').val();
             
-             var configNode = RED.nodes.node(configNodeID);
+            var configNode = RED.nodes.node(configNodeID);
              // console.log(configNode);
-            if(configNode !== null){
-            var ipaddress = configNode.ipaddress;
-            var port = configNode.port;
-            var urlDevice = "http://" + ipaddress + ":" + port+"/devices";
-            var urlCode = "http://" + ipaddress + ":" + port+"/codes";
+             if(configNode !== null){
+                var ipaddress = configNode.ipaddress;
+                var port = configNode.port;
+                var urlDevice = "http://" + ipaddress + ":" + port+"/devices";
+                var urlCode = "http://" + ipaddress + ":" + port+"/codes";
 
-            var xhttpDevice = new XMLHttpRequest();
-            xhttpDevice.onreadystatechange = function() {
-                if (this.readyState == 4 && this.status == 200) {
+                var xhttpDevice = new XMLHttpRequest();
+                xhttpDevice.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
                    // Typical action to be performed when the document is ready:
                    console.log("ok ok ok");
                    console.log(JSON.parse(xhttpDevice.responseText));
-                    var jsonResponse = JSON.parse(xhttpDevice.responseText);
-                    var options ="";
+                   var jsonResponse = JSON.parse(xhttpDevice.responseText);
+                   var options ="";
                     //  $("#node-input-devicemac").empty();
                     // $("#node-input-codeid").empty();
                     for (var i in jsonResponse){
-                    var displayName = jsonResponse[i].name;
-                    var value = jsonResponse[i].mac;
-                    options += '<option value="' + value + '">' + displayName + '</option>';
-                   }
-                $("#node-input-devicemac").append(options);
-                 $("#node-input-devicemac").val(selectedDevice);
-                
+                       if(jsonResponse[i].typeCode < 80000){
+                        var displayName = jsonResponse[i].name;
+                        var value = jsonResponse[i].mac;
+                        options += '<option value="' + value + '">' + displayName + '</option>';
+                    }
                 }
-            };
-            xhttpDevice.open("GET", urlDevice, true);
-            xhttpDevice.send();
+                 $("#node-input-devicemac").empty();
+                $("#node-input-devicemac").append(options);
+                $("#node-input-devicemac").val(selectedDevice);
+                
+            }
+        };
+        xhttpDevice.open("GET", urlDevice, true);
+        xhttpDevice.send();
 
-             var xhttpCode = new XMLHttpRequest();
-            xhttpCode.onreadystatechange = function() {
-                if (this.readyState == 4 && this.status == 200) {
+        var xhttpCode = new XMLHttpRequest();
+        xhttpCode.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
                    // Typical action to be performed when the document is ready:
                    console.log("ok ok ok");
                    console.log(JSON.parse(xhttpCode.responseText));
-                    var jsonResponse = JSON.parse(xhttpCode.responseText);
-                    var options ="";
-                    for (var i in jsonResponse){
+                   var jsonResponse = JSON.parse(xhttpCode.responseText);
+                   var options ="";
+                   for (var i in jsonResponse){
                     var displayName = jsonResponse[i].displayName;
                     var value = jsonResponse[i].id;
                     options += '<option value="' + value + '">' + displayName + '</option>';
-                   }
+                }
+                $("#node-input-codeid").empty();
                 $("#node-input-codeid").append(options);
                 $("#node-input-codeid").val(selectedCode);
-                }
-            };
-            xhttpCode.open("GET", urlCode, true);
-            xhttpCode.send();
-
-        }
-
-            if(configNode === null){
-                $("#device_select").hide();
-                $("#code_select").hide();
             }
-            else{
-                 $("#device_select").show();
-                 $("#code_select").show();
-             }
-             });
+        };
+        xhttpCode.open("GET", urlCode, true);
+        xhttpCode.send();
+
+    }
+
+    if(configNode === null){
+        $("#device_select").hide();
+        $("#code_select").hide();
+    }
+    else{
+       $("#device_select").show();
+       $("#code_select").show();
+   }
+});
         }
 
-       
+
     });
 
-     
-   
+
+
 </script>
 
 <script type="text/x-red" data-template-name="Command">
@@ -108,57 +110,57 @@
         <label for="node-input-server"><i class="icon-tag"></i> Server</label>
         <input type="text" id="node-input-server"  placeholder="Server">
     </div>
-       <div class="form-row" id="device_select">
+    <div class="form-row" id="device_select">
         <label id="a" for="node-input-devicemac"><i class="icon-tag"></i> Devices</label>
         <select type="text" id="node-input-devicemac"  placeholder="Devices">
         </select>
-        </div>
-         <div class="form-row" id="code_select" >
+    </div>
+    <div class="form-row" id="code_select" >
         <label id="a" for="node-input-codeid"><i class="icon-tag"></i> Codes</label>
         <select type="text" id="node-input-codeid"  placeholder="Codes">
         </select>
-        </div>
+    </div>
 </script>
  
 <script type="text/x-red" data-help-name="Command">
-<p>Use this node to execute a specific Device and Code command from RM Plugin.</p>
+    <p>Use this node to execute a specific Device and Code command from RM Plugin.</p>
 
- <h3>Inputs</h3>
-     <ol class="node-ports">
-         <li>Standard input
-             <dl class="message-properties">
-                 <dt>Intergrated </dt>
-                 <dd>Selected our intergrated Devices and Codes list from dropdown menu and use a trigger input node to execute that macro.</dd>
-             </dl>
-         </li>
-         <li>Alternative input
-             <dl class="message-properties">
-                 <dt>msg.codeID <span class="property-type">string</span></dt>
-                 <dd>specific ID of a code to execute.</dd>
-             </dl>
-              <dl class="message-properties">
-                 <dt>msg.deviceMAC <span class="property-type">string</span></dt>
-                 <dd>specific ID of a device to execute.</dd>
-             </dl>
-         </li>
-     </ol>
-      <h3>Output</h3>
-     <ol class="node-ports">
-        
-             <dl class="message-properties">
-                 <dt>msg.payload <span class="property-type">string</span></dt>
-                 <dd>indicate the task is <code>success</code> or <code>failed</code>.</dd>
-             </dl>
-              <dl class="message-properties">
-                 <dt>msg.rawResponse <span class="property-type">object</span></dt>
-                 <dd>raw response data return from RM PLugin.</dd>
-             </dl>
-           
-     </ol>
+    <h3>Inputs</h3>
+    <ol class="node-ports">
+       <li>Standard input
+           <dl class="message-properties">
+               <dt>Intergrated </dt>
+               <dd>Selected our intergrated Devices and Codes list from dropdown menu and use a trigger input node to execute that macro.</dd>
+           </dl>
+       </li>
+       <li>Alternative input
+           <dl class="message-properties">
+               <dt>msg.codeID <span class="property-type">string</span></dt>
+               <dd>specific ID of a code to execute.</dd>
+           </dl>
+           <dl class="message-properties">
+               <dt>msg.deviceMAC <span class="property-type">string</span></dt>
+               <dd>specific ID of a device to execute.</dd>
+           </dl>
+       </li>
+   </ol>
+   <h3>Output</h3>
+   <ol class="node-ports">
+
+       <dl class="message-properties">
+           <dt>msg.payload <span class="property-type">string</span></dt>
+           <dd>indicate the task is <code>success</code> or <code>failed</code>.</dd>
+       </dl>
+       <dl class="message-properties">
+           <dt>msg.rawResponse <span class="property-type">object</span></dt>
+           <dd>raw response data return from RM PLugin.</dd>
+       </dl>
+
+   </ol>
 
 
-<h3>Details</h3>
-    <p><code>msg.rawResponse</code> is a raw json response from RM Plugin with <code>status</code>, <code>msg</code>,<code>uri</code>,<code>macroId</code>,<code>timestamp</code> attributes. </p>
-    <p> <b>Note: </b> if <code>msg.deviceMAC</code> and <code>msg.codeID</code> exist from input, we will override the selected device and code in dropdown menu from node's settings to execute the command with <code>msg.deviceMAC</code> and <code>msg.codeID</code>.If <b> <i>one of those two </i> </b>field  are missing from input, we will execute the command selected from dropdown menu instead. </p>
+   <h3>Details</h3>
+   <p><code>msg.rawResponse</code> is a raw json response from RM Plugin with <code>status</code>, <code>msg</code>,<code>uri</code>,<code>macroId</code>,<code>timestamp</code> attributes. </p>
+   <p> <b>Note: </b> if <code>msg.deviceMAC</code> and <code>msg.codeID</code> exist from input, we will override the selected device and code in dropdown menu from node's settings to execute the command with <code>msg.deviceMAC</code> and <code>msg.codeID</code>.If <b> <i>one of those two </i> </b>field  are missing from input, we will execute the command selected from dropdown menu instead. </p>
 
 </script>
