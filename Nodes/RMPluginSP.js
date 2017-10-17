@@ -6,6 +6,8 @@ module.exports = function(RED) {
         // this.port = config.port;
         var node = this;
         var msg;
+        var codeID = config.codeid;
+        var deviceMAC = config.devicemac;
    // Retrieve the config node
         this.server = RED.nodes.getNode(config.server);
 
@@ -16,12 +18,17 @@ module.exports = function(RED) {
             node.send(this.server.ipaddress);
             //  this.server.port
             node.send(this.server.port);
-             this.on('input', function(msg) {
-                node.status({fill:"blue",shape:"ring",text:"requesting"});
-              node.send("SP code: "+config.codeid);
-            const http = require("http");
-               var url = "http://" + this.server.ipaddress + ":" + this.server.port+"/execute?macroId="+msg.macroID;
 
+  
+             this.on('input', function(msg) {
+              if(msg.payload.toLowerCase() == "true" || msg.payload.toLowerCase() == "on" || msg.payload == "1")
+                codeID= true;
+              if(msg.payload.toLowerCase() == "false" || msg.payload.toLowerCase() == "off" || msg.payload == "0")
+                codeID = false;
+
+                node.status({fill:"blue",shape:"ring",text:"requesting"});
+            const http = require("http");
+            var url = "http://" + this.server.ipaddress + ":" + this.server.port+"/send?deviceMac="+deviceMAC+"&on="+codeID;
             http.get(url, (resp) => {
 
               let rawData = '';
