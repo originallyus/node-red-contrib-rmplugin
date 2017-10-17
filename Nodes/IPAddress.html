@@ -8,6 +8,20 @@
         },
         label: function() {
             return this.ipaddress + ":" + this.port;
+        },
+        oneditprepare: function () {
+          var node = this;
+          var address = $("#node-config-input-ipaddress");
+          var port = $("#node-config-input-port");
+
+          //Calling the API built by NodeJS code
+          $.getJSON('/config', function (configInfo) {
+            $.each(configInfo, function (l, configInfo) {
+                console.log(configInfo);
+                address.val(configInfo.address);
+                port.val(configInfo.port);
+            });
+          });
         }
     });
 </script>
