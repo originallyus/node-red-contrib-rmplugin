@@ -254,14 +254,14 @@
 </script>
  
 <script type="text/x-red" data-help-name="SP Devices">
-  <p>Use this node to execute a macro from RM Plugin.</p>
+  <p>Use this node to turn on or off a SP Device from RM Plugin.</p>
 
   <h3>Input</h3>
   <ol class="node-ports">
 
    <dl class="message-properties">
-     <dt>msg.macroID <span class="property-type">string</span></dt>
-     <dd>specific ID of a macro to execute</dd>
+     <dt>msg.payload <span class="property-type">string</span></dt>
+     <dd>command to turn on or off selected SP Device</dd>
    </dl>
  </ol>
 
@@ -276,10 +276,14 @@
    <dt>msg.rawResponse <span class="property-type">object</span></dt>
    <dd>raw response data return from RM PLugin.</dd>
  </dl>
-
+<dl class="message-properties">
+   <dt>msg.message <span class="property-type">string</span></dt>
+   <dd>response message from RM Plugin according to task's status.</dd>
+ </dl>
 </ol>
 
 <h3>Details</h3>
+<p><code>msg.payload</code> could be one of these value <code>true/false</code>, <code>on/off</code>,<code>1/0</code>.</p>
 <p><code>msg.rawResponse</code> is a raw json response from RM Plugin with <code>status</code>, <code>msg</code>,<code>uri</code>,<code>macroId</code>,<code>timestamp</code> attributes. </p>
 
 

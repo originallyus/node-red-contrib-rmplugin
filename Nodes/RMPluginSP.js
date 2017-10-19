@@ -49,6 +49,7 @@ module.exports = function(RED) {
                 if(msg.rawResponse.status !== "ok"){
                   msg.payload = "failed";
                 }
+                msg.message = msg.rawResponse.msg;
                 node.send(msg);
                 node.status({fill:"green",shape:"dot",text:"completed"});
               });
