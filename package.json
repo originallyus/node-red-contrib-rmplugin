@@ -1,6 +1,6 @@
 {
     "name": "node-red-contrib-rmplugin",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "A collection of nodes for RMPlugin Android app",
     "homepage": "https://github.com/originallyus/node-red-contrib-rmplugin",
     "keywords": [
@@ -33,7 +33,6 @@
             "RMPluginA1": "Nodes/RMPluginA1.js",
             "RMPluginRMTemperature": "Nodes/RMPluginRMTemperature.js",
             "RMPluginIFLearning": "Nodes/RMPluginIFLearning.js"
-
         }
     },
     "dependencies": {}
