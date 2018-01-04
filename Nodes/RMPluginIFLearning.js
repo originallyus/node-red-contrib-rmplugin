@@ -13,13 +13,10 @@ module.exports = function(RED) {
         if (this.server) {
             // Do something with:
            
-            //  this.server.host
-            node.send(this.server.ipaddress);
-            //  this.server.port
-            node.send(this.server.port);
+           
              this.on('input', function(msg) {
                 node.status({fill:"blue",shape:"ring",text:"requesting"});
-              node.send("SP code: "+config.codeid);
+              
               if("deviceMAC" in msg)
                   deviceMAC = msg.deviceMAC
               
