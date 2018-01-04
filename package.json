@@ -33,8 +33,9 @@
             "RMPluginA1": "Nodes/RMPluginA1.js",
             "RMPluginRMTemperature": "Nodes/RMPluginRMTemperature.js",
             "RMPluginIFLearning": "Nodes/RMPluginIFLearning.js"
-
         }
     },
-    "dependencies": {}
+    "dependencies": {
+        "bonjour": "^3.5.0"
+    }
 }
