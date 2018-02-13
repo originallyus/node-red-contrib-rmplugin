@@ -24,6 +24,27 @@ module.exports = function(RED) {
 
             http.get(url, (resp) => {
 
+              const { statusCode } = resp;
+              const contentType = resp.headers['content-type'];
+
+              let error;
+              if (statusCode !== 200) {
+                error = new Error('Request Failed.\n' +
+                                  `Status Code: ${statusCode}`);
+              } else if (!/^application\/json/.test(contentType)) {
+                error = new Error('Invalid content-type.\n' +
+                                  `Expected application/json but received ${contentType}`);
+              }
+              if (error) {
+                console.error(error.message);
+                // consume response data to free up memory
+                resp.resume();
+                return;
+              }
+
+              resp.setEncoding('utf8');
+
+
               let rawData = '';
              
               // A chunk of data has been recieved.
@@ -33,9 +54,15 @@ module.exports = function(RED) {
              
               // The whole response has been received. Print out the result.
               resp.on('end', () => {
+                  const { statusCode } = resp;
+                console.log("resp: "+statusCode);
                 console.log(JSON.parse(rawData).explanation);
                 node.send("Final: "+JSON.parse(rawData));
                  msg.rawResponse = JSON.parse(rawData);
+                 if(msg.rawResponse === undefined){
+                  
+                 }
+
                 if(msg.rawResponse.status === "ok"){
                   msg.payload = "success";
                 }
