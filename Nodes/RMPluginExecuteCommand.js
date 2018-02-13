@@ -17,7 +17,7 @@ module.exports = function(RED) {
             //  this.server.port
             node.send(this.server.port);
              this.on('input', function(msg) {
-                node.status({fill:"blue",shape:"ring",text:"requesting"});
+                node.status({fill:"blue", shape:"ring", text:"requesting"});
 
             const http = require("http");
             var url = "http://" + this.server.ipaddress + ":" + this.server.port+"/send?deviceMac="+msg.deviceMAC+"&codeId="+msg.codeID;
@@ -27,7 +27,7 @@ module.exports = function(RED) {
               const { statusCode } = resp;
               const contentType = resp.headers['content-type'];
 
-              let error;
+              var error;
               if (statusCode !== 200) {
                 error = new Error('Request Failed.\n' +
                                   `Status Code: ${statusCode}`);
@@ -43,11 +43,9 @@ module.exports = function(RED) {
               }
 
               resp.setEncoding('utf8');
-
-
-              let rawData = '';
-             
-              // A chunk of data has been recieved.
+              
+              // A chunk of data has been received.
+              var rawData = '';
               resp.on('data', (chunk) => {
                 rawData += chunk;
               });
@@ -55,27 +53,36 @@ module.exports = function(RED) {
               // The whole response has been received. Print out the result.
               resp.on('end', () => {
                   const { statusCode } = resp;
-                console.log("resp: "+statusCode);
-                console.log(JSON.parse(rawData).explanation);
-                node.send("Final: "+JSON.parse(rawData));
-                 msg.rawResponse = JSON.parse(rawData);
-                 if(msg.rawResponse === undefined){
+                  if (statusCode !== 200) {
+                      node.status({fill:"red", shape:"dot", text:"status:" + statusCode});
+                      var error = new Error('Request Failed.\n' + `Status Code: ${statusCode}`);
+                      console.error(error.message);
+                      return;
+                  }
                   
-                 }
+                  msg.rawResponse = JSON.parse(rawData);
+                  if (msg.rawResponse === undefined) {
+                      node.status({fill:"red", shape:"dot", text:"unable to parse json from bridge"});
+                      console.error(rawData);
+                      return;
+                  }
 
-                if(msg.rawResponse.status === "ok"){
-                  msg.payload = "success";
-                }
-                if(msg.rawResponse.status !== "ok"){
-                  msg.payload = "failed";
-                }
-                node.send(msg);
-                node.status({fill:"green",shape:"dot",text:"completed"});
+                  if (msg.rawResponse.status === undefined || msg.rawResponse.status === null) {
+                      node.status({fill:"red", shape:"dot", text:"unexpected response format from bridge"});
+                      console.error(rawData);
+                      return;
+                  }
+                  
+                  var success = msg.rawResponse.status === "ok";
+                  msg.payload = success ? "success" : "failed";
+                  
+                  node.send(msg);
+                  node.status({fill:"green", shape:"dot", text:success});
               });
              
             }).on("error", (err) => {
               console.log("Error: " + err.message);
-              node.status({fill:"red",shape:"ring",text:"ERR: " + err.message});
+              node.status({fill:"red", shape:"ring", text:"error: " + err.message});
             });
         });
 
