@@ -103,7 +103,7 @@
             
             var configNode = RED.nodes.node(configNodeID);
              // console.log(configNode);
-             if(configNode !== null){
+             if (configNode !== null){
               var ipaddress = configNode.ipaddress;
               var port = configNode.port;
               var urlDevice = "http://" + ipaddress + ":" + port+"/devices";
@@ -117,8 +117,8 @@
                    var options ="";
 
                    for (var i in jsonResponse){
-                    if(jsonResponse[i].type.toLowerCase().indexOf("sp") !== -1){
-                      if(jsonResponse[i].typeCode < 80000){
+                    if (jsonResponse[i].type.toLowerCase().indexOf("sp") !== -1){
+                      if (jsonResponse[i].typeCode < 80000){
                       var displayName = jsonResponse[i].name;
                       var value = jsonResponse[i].mac;
                       options += '<option value="' + value + '">' + displayName + '</option>';
@@ -128,7 +128,7 @@
                   $("#node-input-devicemac").empty();
                   $("#node-input-devicemac").append(options);
                   console.log("mac length: "+ $("#node-input-devicemac").length);
-                  if($("#node-input-devicemac").length <= 1){
+                  if ($("#node-input-devicemac").length <= 1){
                     $("#node-input-devicemac").prop("selectedIndex", 0).trigger('change');
                   }
                   
@@ -138,7 +138,7 @@
                 else{
            
                    console.log("mac length 2: "+ $("#node-input-devicemac").length);
-                  if($("#node-input-devicemac").length <= 1){
+                  if ($("#node-input-devicemac").length <= 1){
                     $("#node-input-devicemac").prop("selectedIndex", 0).trigger('change');
                   }
                 }
@@ -147,7 +147,7 @@
               xhttpDevice.send();
             }
 
-            if(configNode === null){
+            if (configNode === null){
               $("#device_select").hide();
               $("[name='code_select']").hide();
             }
@@ -164,62 +164,54 @@
         console.log("checkbox: " + $('#node-input-codeid').is(':checked'));
         var deviceMAC =  $("#node-input-devicemac").val();
         console.log("devicemac: "+ deviceMAC);
-            //get config node
-            var configNodeID = $('#node-input-server').val();
-            
-            var configNode = RED.nodes.node(configNodeID);
-            if(deviceMAC === null){
-              $("[name='code_select']").hide();
+        //get config node
+        var configNodeID = $('#node-input-server').val();
+        var configNode = RED.nodes.node(configNodeID);
+        if (configNode == null)
+          return;
+        if (deviceMAC === null) {
+          $("[name='code_select']").hide();
+        }
+        if (deviceMAC == null)
+          return;
+
+        var ipaddress = configNode.ipaddress;
+        var port = configNode.port;
+        var urlDevice = "http://" + ipaddress + ":" + port+"/status?deviceMac=" +deviceMAC;
+        var xhttpDevice = new XMLHttpRequest();
+        xhttpDevice.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+             // Typical action to be performed when the document is ready:
+             console.log("ok ok ok");
+             console.log(JSON.parse(xhttpDevice.responseText));
+             var jsonResponse = JSON.parse(xhttpDevice.responseText);
+             if (jsonResponse.status === "ok"){
              
+              $('#node-input-status').removeClass('status_on');
+              $('#node-input-status').removeClass('status_off');
+              if (jsonResponse.on_off_status === 1){
+                $('#node-input-status').text("ON");
+                $('#node-input-status').addClass('status_on');
+                $('#node-input-codeid').prop('checked', true);
+              }
+              else{
+                $('#node-input-status').text("OFF");
+                $('#node-input-status').addClass('status_off');
+                $('#node-input-codeid').prop('checked', false);
+              }
             }
 
-            if(configNode !== null && deviceMAC !== null){
-              var ipaddress = configNode.ipaddress;
-              var port = configNode.port;
-              var urlDevice = "http://" + ipaddress + ":" + port+"/status?deviceMac=" +deviceMAC;
-              var xhttpDevice = new XMLHttpRequest();
-              xhttpDevice.onreadystatechange = function() {
-                if (this.readyState == 4 && this.status == 200) {
-                   // Typical action to be performed when the document is ready:
-                   console.log("ok ok ok");
-                   console.log(JSON.parse(xhttpDevice.responseText));
-                   var jsonResponse = JSON.parse(xhttpDevice.responseText);
-                   if(jsonResponse.status === "ok"){
-                   
-                    $('#node-input-status').removeClass('status_on');
-                    $('#node-input-status').removeClass('status_off');
-                    if(jsonResponse.on_off_status === 1){
-
-                      $('#node-input-status').text("ON");
-                      $('#node-input-status').addClass('status_on');
-                      $('#node-input-codeid').prop('checked', true);
-                    }
-                    else{
-                      $('#node-input-status').text("OFF");
-                      $('#node-input-status').addClass('status_off');
-                      $('#node-input-codeid').prop('checked', false);
-
-                    }
-                  }
-
-                  if(jsonResponse.status !== "ok"){
-                      $('#node-input-status').text(jsonResponse.msg);
-                      $('#node-input-status').addClass('status_off');
-                      $('#node-input-codeid').prop('checked', false);
-                   
-                  }
-
-
-                }
-              };
-              xhttpDevice.open("GET", urlDevice, true);
-              xhttpDevice.send();
-              $("[name='code_select']").show();
+            if (jsonResponse.status !== "ok"){
+                $('#node-input-status').text(jsonResponse.msg);
+                $('#node-input-status').addClass('status_off');
+                $('#node-input-codeid').prop('checked', false);
             }
-          });
-
-
-
+          }
+        };
+        xhttpDevice.open("GET", urlDevice, true);
+        xhttpDevice.send();
+        $("[name='code_select']").show();
+      });
     }
 
   });
